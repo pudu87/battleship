@@ -2,7 +2,7 @@ const Ship = (length) => {
   let hits = 0;
 
   const hit = () => {
-    obj.hits += 1;
+    return obj.hits += 1;
   }
 
   const isSunk = () => {
