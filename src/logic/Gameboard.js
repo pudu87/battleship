@@ -1,8 +1,16 @@
 import range from 'lodash/range';
+import Ship from './Ship';
 
 const Gameboard = () => {
   const board = Array(10).fill().map(() => Array(10));
   const history = [];
+  const ships = {
+    carrier: Ship(5),
+    battleship: Ship(4),
+    cruiser: Ship(3),
+    submarine: Ship(3),
+    minesweeper: Ship(2)
+  }
 
   const place = (ship, coords, dir) => {
     const locations = extractLocations(ship, coords, dir);
@@ -73,7 +81,7 @@ const Gameboard = () => {
     });
   }
 
-  return { board, history, place, receiveAttack, allSunk }
+  return { board, history, ships, place, receiveAttack, allSunk }
 }
 
 export default Gameboard;

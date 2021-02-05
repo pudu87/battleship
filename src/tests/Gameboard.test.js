@@ -1,11 +1,10 @@
 import Gameboard from '../logic/Gameboard';
-import Ship from '../logic/Ship';
 
 let gameboard;
 let minesweeper;
 beforeEach(() => {
   gameboard = Gameboard();
-  minesweeper = Ship(2, 'M');
+  minesweeper = gameboard.ships.minesweeper;
 });
 
 test('places ship direction W', () => {
@@ -27,7 +26,8 @@ test('cannot place ship outside of gameboard', () => {
 
 test('cannot place ship on top of other ship', () => {
   gameboard.place(minesweeper, [5, 5], 'W');
-  gameboard.place(minesweeper, [4, 4], 'S');
+  let cruiser = gameboard.ships.cruiser;
+  gameboard.place(cruiser, [4, 4], 'S');
   expect(gameboard.board[4][4]).toBeUndefined();
 });
 
