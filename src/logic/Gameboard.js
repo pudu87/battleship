@@ -2,7 +2,7 @@ import range from 'lodash/range';
 import Ship from './Ship';
 
 const Gameboard = () => {
-  const board = Array(10).fill().map(() => Array(10));
+  const board = Array(10).fill().map(() => Array(10).fill(false));
   const history = [];
   const ships = {
     carrier: Ship(5),
@@ -22,14 +22,14 @@ const Gameboard = () => {
     if (!history.find(i => i[0] === coords[0] && i[1] === coords[1])) {
       history.push(coords);
       const target = board[coords[0]][coords[1]];
-      return target === undefined ? false : target.hit();
+      return target ? target.hit() : false;
     };
   }
 
   const allSunk = () => {
     return board.every(row => {
       return row.every(cell => {
-        return cell === undefined ? true : cell.isSunk();
+        return cell ? cell.isSunk() : true;
       });
     });
   }
@@ -71,7 +71,7 @@ const Gameboard = () => {
 
   const overlapsOtherShip = (locations) => {
     return locations.some(coords => {
-      return board[coords[0]][coords[1]] !== undefined;
+      return board[coords[0]][coords[1]];
     });
   }
 

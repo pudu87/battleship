@@ -21,14 +21,14 @@ test('places ship direction N', () => {
 
 test('cannot place ship outside of gameboard', () => {
   gameboard.place(minesweeper, [0, 0], 'W');
-  expect(gameboard.board[0][0]).toBeUndefined();
+  expect(gameboard.board[0][0]).toBe(false);
 });
 
 test('cannot place ship on top of other ship', () => {
   gameboard.place(minesweeper, [5, 5], 'W');
   let cruiser = gameboard.ships.cruiser;
   gameboard.place(cruiser, [4, 4], 'S');
-  expect(gameboard.board[4][4]).toBeUndefined();
+  expect(gameboard.board[4][4]).toBe(false);
 });
 
 test('check for a hit', () => {
