@@ -1,19 +1,19 @@
-import Gameboard from './Gameboard';
+import Gameboard from './Gameboard'
 
-const Player = (name, human) => { 
+const Player = () => { 
   const gameboard = Gameboard();
 
-  const calculateMove = () => {
-    const validMoves = calculateValidMoves();
+  const calculateMove = (history) => {
+    const validMoves = calculateValidMoves(history);
     return validMoves[Math.floor(Math.random() * validMoves.length)];
   }
 
   // PRIVATE
 
-  const calculateValidMoves = () => {
+  const calculateValidMoves = (history) => {
     const allMoves = calculateAllMoves();
     const validMoves = allMoves.filter(move => {
-      return gameboard.history.every(pastMove => {
+      return history.every(pastMove => {
         return move[0] !== pastMove[0] || move[1] !== pastMove[1]; 
       });
     });
@@ -30,7 +30,7 @@ const Player = (name, human) => {
     return allMoves;
   }
 
-  return { name, human, gameboard, calculateMove }
+  return { gameboard, calculateMove }
 }
 
 export default Player;

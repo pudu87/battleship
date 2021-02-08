@@ -1,35 +1,34 @@
 import range from 'lodash/range';
-import Ship from './Ship';
 
 const Gameboard = () => {
-  const board = Array(10).fill().map(() => Array(10).fill(false));
-  const history = [];
-  const ships = {
-    carrier: Ship(5),
-    battleship: Ship(4),
-    cruiser: Ship(3),
-    submarine: Ship(3),
-    minesweeper: Ship(2)
-  }
 
-  const place = (ship, coords, dir) => {
+  const place = (ship, coords, dir, board) => {
     const locations = extractLocations(ship, coords, dir);
-    if (outsideBoard(locations) || overlapsOtherShip(locations)) return;
-    fillBoard(ship, locations);
+    if (outsideBoard(locations) || overlapsOtherShip(locations, board)) {
+      return false;
+    } else {
+      return fillBoard(ship, locations, board);
+    }
   }
 
-  const receiveAttack = (coords) => {
+  const receiveAttack = (coords, board, history) => {
     if (!history.find(i => i[0] === coords[0] && i[1] === coords[1])) {
-      history.push(coords);
       const target = board[coords[0]][coords[1]];
-      return target ? target.hit() : false;
-    };
+      const hits = target ? target.hit(target.hits) : false;
+      return {
+        history : [...history, coords],
+        target: target.name,
+        hits
+      };
+    } else {
+      return false;
+    }
   }
 
-  const allSunk = () => {
+  const allSunk = (board) => {
     return board.every(row => {
       return row.every(cell => {
-        return cell ? cell.isSunk() : true;
+        return cell ? cell.isSunk(cell.hits) : true;
       });
     });
   }
@@ -69,19 +68,21 @@ const Gameboard = () => {
     });
   }
 
-  const overlapsOtherShip = (locations) => {
+  const overlapsOtherShip = (locations, board) => {
     return locations.some(coords => {
       return board[coords[0]][coords[1]];
     });
   }
 
-  const fillBoard = (ship, locations) => {
+  const fillBoard = (ship, locations, board) => {
+    let newBoard = board.map(i => [...i]);
     locations.forEach(coords => {
-      board[coords[0]][coords[1]] = ship;
+      newBoard[coords[0]][coords[1]] = ship;
     });
+    return newBoard;
   }
 
-  return { board, history, ships, place, receiveAttack, allSunk }
+  return { place, receiveAttack, allSunk }
 }
 
 export default Gameboard;

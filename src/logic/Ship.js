@@ -1,16 +1,14 @@
-const Ship = (length) => {
-  let hits = 0;
+const Ship = (name, length) => {
 
-  const hit = () => {
-    return obj.hits += 1;
+  const hit = (hits) => {
+    return hits + 1;
   }
 
-  const isSunk = () => {
-    return length - obj.hits === 0 ? true : false;
+  const isSunk = (hits) => {
+    return length - hits === 0 ? true : false;
   }
 
-  const obj = { length, hits, hit, isSunk }
-  return obj;
+  return { name, length, hit, isSunk }
 }
 
 export default Ship;

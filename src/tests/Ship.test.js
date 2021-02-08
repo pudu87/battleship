@@ -1,23 +1,23 @@
-import testUtils from 'react-dom/test-utils';
 import Ship from '../logic/Ship';
 
   let minesweeper;
+  let hits;
   beforeEach(() => {
-    minesweeper = Ship(2);
+    minesweeper = Ship('minesweeper', 2);
+    hits = 0;
   });
 
   test('ship takes a hit', () => {
-    minesweeper.hit();
-    expect(minesweeper.hits).toBe(1);
+    expect(minesweeper.hit(hits)).toBe(1);
   });
 
   test('ship does not sink', () => {
-    minesweeper.hit();
-    expect(minesweeper.isSunk()).not.toBe(true);
+    hits = minesweeper.hit(hits);
+    expect(minesweeper.isSunk(hits)).not.toBe(true);
   });
 
   test('ship sinks', () => {
-    minesweeper.hit();
-    minesweeper.hit();
-    expect(minesweeper.isSunk()).toBe(true);
+    hits = minesweeper.hit(hits);
+    hits = minesweeper.hit(hits);
+    expect(minesweeper.isSunk(hits)).toBe(true);
   });
