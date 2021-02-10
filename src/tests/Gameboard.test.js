@@ -30,15 +30,15 @@ beforeEach(() => {
 
 test('places ship direction W', () => {
   let newBoard = gameboard.place(minesweeper, position, player);
-  expect(newBoard[5][5].name).toBe('minesweeper');
-  expect(newBoard[5][4].name).toBe('minesweeper');
+  expect(newBoard[5][5]).toBe('minesweeper');
+  expect(newBoard[5][4]).toBe('minesweeper');
 });
 
 test('places ship direction N', () => {
   position.dir = 'N';
   let newBoard = gameboard.place(minesweeper, position, player);
-  expect(newBoard[5][5].name).toBe('minesweeper');
-  expect(newBoard[4][5].name).toBe('minesweeper');
+  expect(newBoard[5][5]).toBe('minesweeper');
+  expect(newBoard[4][5]).toBe('minesweeper');
 });
 
 test('cannot place ship outside of gameboard', () => {

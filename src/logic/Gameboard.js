@@ -16,7 +16,7 @@ const Gameboard = () => {
   const receiveAttack = (coords, player) => {
     const { board, history } = player;
     if (!history.find(i => i[0] === coords[0] && i[1] === coords[1])) {
-      const target = board[coords[0]][coords[1]].name;
+      const target = board[coords[0]][coords[1]];
       const targetData = player.ships[target];
       const hits = target ? targetData.hit(targetData.hits) : false;
       return {
@@ -33,7 +33,8 @@ const Gameboard = () => {
     const board = player.board;
     return board.every(row => {
       return row.every(cell => {
-        return cell ? cell.isSunk(cell.hits) : true;
+        const cellData = player.ships[cell];
+        return cell ? cellData.isSunk(cellData.hits) : true;
       });
     });
   }
@@ -82,7 +83,7 @@ const Gameboard = () => {
   const fillBoard = (ship, locations, board) => {
     let newBoard = board.map(i => [...i]);
     locations.forEach(coords => {
-      newBoard[coords[0]][coords[1]] = ship;
+      newBoard[coords[0]][coords[1]] = ship.name;
     });
     return newBoard;
   }
