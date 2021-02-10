@@ -16,11 +16,12 @@ const Gameboard = () => {
   const receiveAttack = (coords, player) => {
     const { board, history } = player;
     if (!history.find(i => i[0] === coords[0] && i[1] === coords[1])) {
-      const target = board[coords[0]][coords[1]];
-      const hits = target ? target.hit(target.hits) : false;
+      const target = board[coords[0]][coords[1]].name;
+      const targetData = player.ships[target];
+      const hits = target ? targetData.hit(targetData.hits) : false;
       return {
         history : [...history, coords],
-        target: target.name,
+        target,
         hits
       };
     } else {
