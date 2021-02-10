@@ -17,12 +17,12 @@ function App() {
 
   function handleAttack(coords) {
     console.log(gameData)
-    const humanAttack = gameboard.receiveAttack(coords, gameData.computer.board, gameData.computer.history);
+    const humanAttack = gameboard.receiveAttack(coords, gameData.computer);
     if (!humanAttack.history) {
       return console.log('Already been there...')
     } else {
-      const computerMove = player.calculateMove(gameData.human.history);
-      const computerAttack = gameboard.receiveAttack(computerMove, gameData.human.board, gameData.human.history);
+      const computerMove = player.calculateMove(gameData.human);
+      const computerAttack = gameboard.receiveAttack(computerMove, gameData.human);
       const newData = produce(gameData, (draft) => {
         if (humanAttack.target) {
           draft.computer.ships[humanAttack.target].hits = humanAttack.target.hits;

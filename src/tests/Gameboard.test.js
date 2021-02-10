@@ -2,14 +2,16 @@ import Gameboard from '../logic/Gameboard';
 import Ship from '../logic/Ship';
 
 let gameboard;
-let board;
-let history;
+let player;
 let ships;
-let minesweeper
+let minesweeper;
+let position;
 beforeEach(() => {
   gameboard = Gameboard();
-  board = Array(10).fill().map(() => Array(10).fill(false));
-  history = [];
+  player = {  
+    board: Array(10).fill().map(() => Array(10).fill(false)),
+    history: []
+  }
   ships = {
     minesweeper: {
       ...Ship('minesweeper', 2),
@@ -21,81 +23,91 @@ beforeEach(() => {
     }
   }
   minesweeper = ships.minesweeper;
+  position = {
+    coords: [5, 5],
+    dir: 'W'
+  }
 });
 
 test('places ship direction W', () => {
-  let newBoard = gameboard.place(minesweeper, [5, 5], 'W', board);
+  let newBoard = gameboard.place(minesweeper, position, player);
   expect(newBoard[5][5].name).toBe('minesweeper');
   expect(newBoard[5][4].name).toBe('minesweeper');
 });
 
 test('places ship direction N', () => {
-  let newBoard = gameboard.place(minesweeper, [5, 5], 'N', board);
+  position.dir = 'N';
+  let newBoard = gameboard.place(minesweeper, position, player);
   expect(newBoard[5][5].name).toBe('minesweeper');
   expect(newBoard[4][5].name).toBe('minesweeper');
 });
 
 test('cannot place ship outside of gameboard', () => {
-  let newBoard = gameboard.place(minesweeper, [0, 0], 'W', board);
+  position.coords = [0, 0];
+  let newBoard = gameboard.place(minesweeper, position, player);
   expect(newBoard).toBe(false);
 });
 
 test('cannot place ship on top of other ship', () => {
-  board = gameboard.place(minesweeper, [5, 5], 'W', board);
-  let newBoard = gameboard.place(ships.cruiser, [4, 4], 'S', board);
+  player.board = gameboard.place(minesweeper, position, player);
+  let cruiserPosition = {
+    coords: [4, 4],
+    dir: 'S'
+  }
+  let newBoard = gameboard.place(ships.cruiser, cruiserPosition, player);
   expect(newBoard).toBe(false);
 });
 
 test('check for a hit', () => {
-  board = gameboard.place(minesweeper, [5, 5], 'W', board);
-  let attack = gameboard.receiveAttack([5, 5], board, history);
+  player.board = gameboard.place(minesweeper, position, player);
+  let attack = gameboard.receiveAttack([5, 5], player);
   expect(attack.target).toBe('minesweeper');
   expect(attack.hits).toBe(1);
 });
 
 test('check if sunk', () => {
-  board = gameboard.place(minesweeper, [5, 5], 'W', board);
-  let attack = gameboard.receiveAttack([5, 5], board, history);
-  history = attack.history;
+  player.board = gameboard.place(minesweeper, position, player);
+  let attack = gameboard.receiveAttack([5, 5], player);
+  player.history = attack.history;
   ships[attack.target].hits = attack.hits;
-  let nextAttack = gameboard.receiveAttack([5, 4], board, history);
+  let nextAttack = gameboard.receiveAttack([5, 4], player);
   ships[nextAttack.target].hits = nextAttack.hits;
   expect(minesweeper.isSunk(minesweeper.hits)).toBe(true);
 });
 
 test('check for a miss', () => {
-  board = gameboard.place(minesweeper, [5, 5], 'W', board);
-  let attack = gameboard.receiveAttack([0, 0], board, history);
+  player.board = gameboard.place(minesweeper, position, player);
+  let attack = gameboard.receiveAttack([0, 0], player);
   expect(attack.hits).toBe(false);
 });
 
 test('remembers all shots', () => {
-  board = gameboard.place(minesweeper, [5, 5], 'W', board);
-  let attack = gameboard.receiveAttack([5, 5], board, history);
-  history = attack.history;
-  let nextAttack = gameboard.receiveAttack([1, 1], board, history);
-  history = nextAttack.history;
-  expect(history).toContainEqual([5, 5]);
-  expect(history).toContainEqual([1, 1]);
+  player.board = gameboard.place(minesweeper, position, player);
+  let attack = gameboard.receiveAttack([5, 5], player);
+  player.history = attack.history;
+  let nextAttack = gameboard.receiveAttack([1, 1], player);
+  player.history = nextAttack.history;
+  expect(player.history).toContainEqual([5, 5]);
+  expect(player.history).toContainEqual([1, 1]);
 });
 
 test('cannot attack same place twice', () => {
-  board = gameboard.place(minesweeper, [5, 5], 'W', board);
-  let attack = gameboard.receiveAttack([5, 5], board, history);
-  history = attack.history;
+  player.board = gameboard.place(minesweeper, position, player);
+  let attack = gameboard.receiveAttack([5, 5], player);
+  player.history = attack.history;
   ships[attack.target].hits = attack.hits;
-  let nextAttack = gameboard.receiveAttack([5, 5], board, history);
-  expect(history).toEqual([[5, 5]]);
+  let nextAttack = gameboard.receiveAttack([5, 5], player);
+  expect(player.history).toEqual([[5, 5]]);
   expect(nextAttack).toBe(false);
 });
 
 test('checks for a victory', () => {
-  board = gameboard.place(minesweeper, [5, 5], 'W', board);
-  let attack = gameboard.receiveAttack([5, 5], board, history);
-  history = attack.history;
+  player.board = gameboard.place(minesweeper, position, player);
+  let attack = gameboard.receiveAttack([5, 5], player);
+  player.history = attack.history;
   ships[attack.target].hits = attack.hits;
-  let nextAttack = gameboard.receiveAttack([5, 4], board, history);
-  history = nextAttack.history;
+  let nextAttack = gameboard.receiveAttack([5, 4], player);
+  player.history = nextAttack.history;
   ships[nextAttack.target].hits = nextAttack.hits;
-  expect(gameboard.allSunk(board)).toBe(true);
+  expect(gameboard.allSunk(player)).toBe(true);
 });

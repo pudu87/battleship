@@ -2,7 +2,9 @@ import range from 'lodash/range';
 
 const Gameboard = () => {
 
-  const place = (ship, coords, dir, board) => {
+  const place = (ship, position, player) => {
+    const { coords, dir } = position;
+    const board = player.board;
     const locations = extractLocations(ship, coords, dir);
     if (outsideBoard(locations) || overlapsOtherShip(locations, board)) {
       return false;
@@ -11,7 +13,8 @@ const Gameboard = () => {
     }
   }
 
-  const receiveAttack = (coords, board, history) => {
+  const receiveAttack = (coords, player) => {
+    const { board, history } = player;
     if (!history.find(i => i[0] === coords[0] && i[1] === coords[1])) {
       const target = board[coords[0]][coords[1]];
       const hits = target ? target.hit(target.hits) : false;
@@ -25,7 +28,8 @@ const Gameboard = () => {
     }
   }
 
-  const allSunk = (board) => {
+  const allSunk = (player) => {
+    const board = player.board;
     return board.every(row => {
       return row.every(cell => {
         return cell ? cell.isSunk(cell.hits) : true;

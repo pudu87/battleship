@@ -3,7 +3,8 @@ import Gameboard from './Gameboard'
 const Player = () => { 
   const gameboard = Gameboard();
 
-  const calculateMove = (history) => {
+  const calculateMove = (player) => {
+    const history = player.history;
     const validMoves = calculateValidMoves(history);
     return validMoves[Math.floor(Math.random() * validMoves.length)];
   }
