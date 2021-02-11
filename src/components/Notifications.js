@@ -1,5 +1,5 @@
 const Notifications = (props) => {
-  const { gameOver } = props
+  const { gameOver } = props;
 
   return (
     <section>

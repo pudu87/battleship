@@ -5,6 +5,24 @@ section {
   border: 1px solid #aaa;
   padding: 20px;
 }
+
+// EFFECTS
+
+.shot,
+.hit {
+  transition-property: background-color;
+  transition-duration: 1s;
+  transition-timing-function: ease-out;
+}
+.shot {
+  background-color: rgb(180, 180, 255);
+}
+.hit {
+  background-color: rgb(255, 170, 170);
+}
+
+// BOARDS
+
 .board {
   ul {
     display: grid;
@@ -13,7 +31,10 @@ section {
   }
   li {
     list-style: none;
+  }
+  .cell {
     border: 1px solid #ccc;
-    font-size: 8px;
+    font-size: 12px;
+    text-transform: capitalize;
   }
 }

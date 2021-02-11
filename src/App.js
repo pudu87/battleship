@@ -14,7 +14,6 @@ function App() {
   const gameboard = player.gameboard;
 
   const [data, setData] = useState(autoPlaceShips());
-
   const { human, computer } = data;
 
   function autoPlaceShips() {
@@ -32,32 +31,35 @@ function App() {
 
   function handleAttack(coords) {
     console.log(data)
-    console.log(gameboard.allSunk(computer))
-    console.log(computer.ships.minesweeper.isSunk(computer.ships.minesweeper.hits))
     const humanAttack = gameboard.receiveAttack(coords, computer);
-    if (!humanAttack.history) {
+    if (!humanAttack) {
       return console.log('Already been there...')
     } else {
       const computerMove = player.calculateMove(human);
       const computerAttack = gameboard.receiveAttack(computerMove, human);
-      const newData = produce(data, (draft) => {
-        if (humanAttack.target) {
-          draft.computer.ships[humanAttack.target].hits = humanAttack.hits;
-          if (gameboard.allSunk(draft.computer)) {
-            draft.gameOver = 'human';
-          }
-        }
-        if (computerAttack.target) {
-          draft.human.ships[computerAttack.target].hits = computerAttack.hits;
-          if (gameboard.allSunk(draft.human)) {
-            draft.gameOver = 'computer';
-          }
-        }
-        draft.computer.history = humanAttack.history;
-        draft.human.history = computerAttack.history;
-      })
-      setData(newData);
+      handleAttackData(humanAttack, computerAttack);
     }
+  }
+
+  function handleAttackData(humanAttack, computerAttack) {
+    const newData = produce(data, (draft) => {
+      if (humanAttack.target) {
+        draft.computer.ships[humanAttack.target].hits = humanAttack.hits;
+        if (gameboard.allSunk(draft.computer)) {
+          draft.gameOver = 'human';
+        }
+      }
+      if (computerAttack.target) {
+        draft.human.ships[computerAttack.target].hits = computerAttack.hits;
+        if (gameboard.allSunk(draft.human)) {
+          draft.gameOver = 'computer';
+        }
+      }
+      draft.computer.history = humanAttack.history;
+      draft.human.history = computerAttack.history;
+    });
+    console.log(newData);
+    setData(newData);
   }
 
   return (
@@ -66,9 +68,11 @@ function App() {
         gameOver={data.gameOver}/>
       <Setup/>
       <Board 
-        board={human.board}/>
+        board={human.board}
+        history={human.history}/>
       <OtherBoard
         board={computer.board}
+        history={computer.history}
         onAttack={handleAttack}/>
     </div>
   );
