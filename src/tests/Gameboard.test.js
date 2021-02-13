@@ -24,25 +24,25 @@ beforeEach(() => {
   minesweeper = player.ships.minesweeper;
   position = {
     coords: [5, 5],
-    dir: 'W'
+    horizontal: true
   }
 });
 
-test('places ship direction W', () => {
+test('places ship horizontal', () => {
   let newBoard = gameboard.place(minesweeper, position, player);
   expect(newBoard[5][5]).toBe('minesweeper');
-  expect(newBoard[5][4]).toBe('minesweeper');
+  expect(newBoard[5][6]).toBe('minesweeper');
 });
 
-test('places ship direction N', () => {
-  position.dir = 'N';
+test('places ship vertical', () => {
+  position.horizontal = false;
   let newBoard = gameboard.place(minesweeper, position, player);
   expect(newBoard[5][5]).toBe('minesweeper');
-  expect(newBoard[4][5]).toBe('minesweeper');
+  expect(newBoard[6][5]).toBe('minesweeper');
 });
 
 test('cannot place ship outside of gameboard', () => {
-  position.coords = [0, 0];
+  position.coords = [0, 9];
   let newBoard = gameboard.place(minesweeper, position, player);
   expect(newBoard).toBe(false);
 });
@@ -50,8 +50,8 @@ test('cannot place ship outside of gameboard', () => {
 test('cannot place ship on top of other ship', () => {
   player.board = gameboard.place(minesweeper, position, player);
   let cruiserPosition = {
-    coords: [4, 4],
-    dir: 'S'
+    coords: [4, 6],
+    horizontal: false
   }
   let newBoard = gameboard.place(player.ships.cruiser, cruiserPosition, player);
   expect(newBoard).toBe(false);
@@ -69,7 +69,7 @@ test('check if sunk', () => {
   let attack = gameboard.receiveAttack([5, 5], player);
   player.history = attack.history;
   player.ships[attack.target].hits = attack.hits;
-  let nextAttack = gameboard.receiveAttack([5, 4], player);
+  let nextAttack = gameboard.receiveAttack([5, 6], player);
   player.ships[nextAttack.target].hits = nextAttack.hits;
   expect(minesweeper.isSunk(minesweeper.hits)).toBe(true);
 });
@@ -105,7 +105,7 @@ test('checks for a victory', () => {
   let attack = gameboard.receiveAttack([5, 5], player);
   player.history = attack.history;
   player.ships[attack.target].hits = attack.hits;
-  let nextAttack = gameboard.receiveAttack([5, 4], player);
+  let nextAttack = gameboard.receiveAttack([5, 6], player);
   player.history = nextAttack.history;
   player.ships[nextAttack.target].hits = nextAttack.hits;
   expect(gameboard.allSunk(player)).toBe(true);

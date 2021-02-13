@@ -1,11 +1,9 @@
-import range from 'lodash/range';
-
 const Gameboard = () => {
 
   const place = (ship, position, player) => {
-    const { coords, dir } = position;
+    const { coords, horizontal } = position;
     const board = player.board;
-    const locations = extractLocations(ship, coords, dir);
+    const locations = extractLocations(ship, coords, horizontal);
     if (outsideBoard(locations) || overlapsOtherShip(locations, board)) {
       return false;
     } else {
@@ -41,37 +39,22 @@ const Gameboard = () => {
 
   // PRIVATE
 
-  const extractLocations = (ship, coords, dir) => {
+  const extractLocations = (ship, coords, horizontal) => {
     const locations = [];
-    switch(dir) {
-      case 'N':
-        for (let i = 0; i < ship.length; i++) {
-          locations.push([coords[0] - i, coords[1]]);
-        };
-        break;
-      case 'E':
-        for (let i = 0; i < ship.length; i++) {
-          locations.push([coords[0], coords[1] + i]);
-        };
-        break;
-      case 'S':
-        for (let i = 0; i < ship.length; i++) {
-          locations.push([coords[0] + i, coords[1]]);
-        };
-        break;
-      case 'W':
-        for (let i = 0; i < ship.length; i++) {
-          locations.push([coords[0], coords[1] - i]);
-        };
-        break;
-    };
+    if (horizontal) {
+      for (let i = 0; i < ship.length; i++) {
+        locations.push([coords[0], coords[1] + i]);
+      };
+    } else {
+      for (let i = 0; i < ship.length; i++) {
+        locations.push([coords[0] + i, coords[1]]);
+      };
+    }
     return locations;
   }
 
   const outsideBoard = (locations) => {
-    return locations.flat().some(coord => {
-      return !range(0,10).includes(coord);
-    });
+    return locations.flat().some(coord => coord >=10);
   }
 
   const overlapsOtherShip = (locations, board) => {
