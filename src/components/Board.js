@@ -24,8 +24,7 @@ const Board = (props) => {
   })
 
   function removeShip(e) {
-    const target = e.target.nodeName === 'SPAN' ? e.target.parentNode : e.target;
-    const shipName = target.className.split(' ')[1];
+    const shipName = e.target.closest('li').className.split(' ')[1];
     props.onRemove(shipName);
     const setupSection = document.querySelector('#setup');
     const ship = setupSection.querySelector(`.${shipName}`);

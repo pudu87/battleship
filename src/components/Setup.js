@@ -1,8 +1,16 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const Setup = (props) => {
   const human = props.human;
   const ships = human.ships;
+
+  const [orientation, setOrientation] = useState({
+    carrier: true,
+    battleship: true,
+    cruiser: true,
+    submarine: true,
+    minesweeper: true
+  });
 
   useEffect(() => {
     const setupSection = document.querySelector('#setup');
@@ -11,7 +19,7 @@ const Setup = (props) => {
     const cells = boardSection.querySelectorAll('.cell');
     addEvents(ships, cells);
     return () => { removeEvents(ships, cells) }
-  }, [human])
+  }, [human, orientation])
 
   function addEvents(ships, cells) {
     ships.forEach(ship => {
@@ -38,12 +46,32 @@ const Setup = (props) => {
   }
 
   function rotate(e) {
-    console.log(e);
+    const ship = e.target.closest('ul');
+    const shipName = ship.className.split(' ')[1];
+    setOrientation({
+      ...orientation,
+      [shipName]: !orientation[shipName]
+    })
+  }
+
+  function horizontalStyle(length) {
+    return {
+      width: `${length * 25}px`,
+      gridTemplateColumns: `repeat(${length}, 25px)`,
+      gridTemplateRows: '25px'
+    }
+  }
+
+  function verticalStyle(length) { 
+    return {
+      width: '25px',
+      gridTemplateColumns: '25px',
+      gridTemplateRows: `repeat(${length}, 25px)`
+    }
   }
 
   function dragStart(e) {
-    const target = e.explicitOriginalTarget
-    const part = target.nodeName === 'SPAN' ? target.parentNode : target;
+    const part = e.explicitOriginalTarget.closest('li');
     const partNr = part.className.split(' ')[0].split('_')[1];
     const ship = e.target.className.split(' ')[1];
     e.dataTransfer.setData("text/plain", `${partNr} ${ship}`);
@@ -57,7 +85,9 @@ const Setup = (props) => {
         return cell === ship;
       })
     })
-    if (!succes) this.classList.remove('hidden');
+    if (!succes) {
+      this.classList.remove('hidden');
+    }
   }
   
   function dragOver(e) {
@@ -66,18 +96,18 @@ const Setup = (props) => {
   }
 
   function dragDrop(e) {
-    const cell = e.target.nodeName === 'SPAN' ? e.target.parentNode : e.target;
+    const cell = e.target.closest('li');
     let coords = cell.className.split(' ')[0].split('_');
     coords.shift();
     coords = coords.map(i => Number(i));
     const data = e.dataTransfer.getData("text/plain");
     const ship = data.split(' ')[1];
     const partNr = Number(data.split(' ')[0]);
-    coords[1] -= partNr;
+    orientation[ship] ? coords[1] -= partNr : coords[0] -= partNr;
     const position = {
       coords,
-      horizontal: true
-    }
+      horizontal: orientation[ship]
+    };
     props.onPlacement(ship, position);    
   }
 
@@ -101,9 +131,11 @@ const Setup = (props) => {
         key={index}
         className={`ship ${ship.name}`}
         draggable='true'
-        style={{
-          width: `${ship.length * 25}px`
-        }}>
+        style={
+          orientation[ship.name] ? 
+            horizontalStyle(ship.length) : 
+            verticalStyle(ship.length)
+        }>
         {shipView(ship)}
       </ul>
     )
