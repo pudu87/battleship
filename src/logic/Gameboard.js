@@ -11,6 +11,15 @@ const Gameboard = () => {
     }
   }
 
+  const remove = (ship, player) => {
+    const board = player.board;
+    return board.map(row => {
+      return row.map(cell => {
+        return cell === ship.name ? false : cell;
+      })
+    })
+  }
+
   const receiveAttack = (coords, player) => {
     const { board, history } = player;
     if (!history.find(i => i[0] === coords[0] && i[1] === coords[1])) {
@@ -71,7 +80,7 @@ const Gameboard = () => {
     return newBoard;
   }
 
-  return { place, receiveAttack, allSunk }
+  return { place, remove, receiveAttack, allSunk }
 }
 
 export default Gameboard;

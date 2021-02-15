@@ -57,6 +57,12 @@ test('cannot place ship on top of other ship', () => {
   expect(newBoard).toBe(false);
 });
 
+test('removes a ship', () => {
+  player.board = gameboard.place(minesweeper, position, player);
+  let newBoard = gameboard.remove(minesweeper, player);
+  expect(newBoard[5][5]).toBe(false);
+})
+
 test('check for a hit', () => {
   player.board = gameboard.place(minesweeper, position, player);
   let attack = gameboard.receiveAttack([5, 5], player);
