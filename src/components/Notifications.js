@@ -2,7 +2,7 @@ const Notifications = (props) => {
   const { gameOver } = props;
 
   return (
-    <section>
+    <section id='notifications'>
       Notifications
       { gameOver && 
         <div>

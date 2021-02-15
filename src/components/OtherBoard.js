@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
 
 const OtherBoard = (props) => {
-  const { board, history } = props;
+  const { board, history } = props.computer;
 
   useEffect(() => {
     const boardSection = document.querySelector('#other-board');
@@ -16,7 +16,7 @@ const OtherBoard = (props) => {
       cells.forEach(cell => {
         cell.addEventListener('click', attack);
       })
-    }, 2000)
+    }, 1000)
   }
 
   function removeClickEvents(cells) {

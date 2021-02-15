@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 .App {
   text-align: center;
 }
@@ -6,8 +9,15 @@ section {
   padding: 20px;
 }
 
+// PARAMS
+
+$board-width: 250px;
+
 // EFFECTS
 
+.hidden {
+  display: none !important;
+}
 .shot,
 .hit {
   transition-property: background-color;
@@ -20,21 +30,65 @@ section {
 .hit {
   background-color: rgb(255, 170, 170);
 }
+.part > span,
+.cell > span {
+  display: block;
+  width: 95%;
+  height: 95%;
+  border-radius: 35%;
+}
+.minesweeper span {
+  background-color: rgb(255, 207, 160);
+}
+.submarine span {
+  background-color: rgb(175, 175, 255);
+}
+.cruiser span {
+  background-color: rgb(201, 201, 146);
+}
+.battleship span {
+  background-color: rgb(158, 255, 223);
+}
+.carrier span {
+  background-color: rgb(255, 169, 255);
+}
 
 // BOARDS
 
 .board {
-  ul {
+  > ul {
+    width: $board-width;
     display: grid;
-    grid-template-columns: repeat(10, 25px);
-    grid-template-rows: repeat(10, 25px);
-  }
-  li {
-    list-style: none;
+    grid-template-columns: repeat(10, $board-width / 10);
+    grid-template-rows: repeat(10, $board-width / 10);
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
   }
   .cell {
-    border: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
     font-size: 12px;
     text-transform: capitalize;
+    list-style: none;
+  }
+}
+
+// SETUP
+
+#setup {
+  margin-top: 20px;
+}
+ul {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 25px);
+  grid-template-rows: 25px;
+  li {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    list-style: none;
   }
 }

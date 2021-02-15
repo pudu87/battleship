@@ -2,7 +2,6 @@ import { useState } from 'react';
 import produce from 'immer';
 import './App.scss';
 import Notifications from './components/Notifications';
-import Setup from './components/Setup';
 import Board from './components/Board';
 import OtherBoard from './components/OtherBoard';
 import Player from './logic/Player';
@@ -19,18 +18,35 @@ function App() {
   function autoPlaceShips() {
     const position = {
       coords: [0, 0],
-      dir: 'E'
+      horizontal: true
     }
-    const humanBoard = gameboard.place(dataObj.human.ships.minesweeper, position, dataObj.human);
     const computerBoard = gameboard.place(dataObj.computer.ships.minesweeper, position, dataObj.computer);
     return produce(dataObj, (draft) => {
-      draft.human.board = humanBoard;
       draft.computer.board = computerBoard;
     })
   }
 
+  function handlePlacement(ship, position) {
+    const board = gameboard.place(human.ships[ship], position, human);
+    if (board) {
+      const newData = produce(data, (draft) => {
+        draft.human.board = board;
+      })
+      setData(newData);
+      console.log(newData);
+    }
+    return board;
+  }
+
+  function handleRemove(ship) {
+    const board = gameboard.remove(human.ships[ship], human);
+    const newData = produce(data, (draft) => {
+      draft.human.board = board;
+    })
+    setData(newData);
+  }
+
   function handleAttack(coords) {
-    console.log(data)
     const humanAttack = gameboard.receiveAttack(coords, computer);
     if (!humanAttack) {
       return console.log('Already been there...')
@@ -66,14 +82,16 @@ function App() {
     <div className="App">
       <Notifications
         gameOver={data.gameOver}/>
-      <Setup/>
       <Board 
-        board={human.board}
-        history={human.history}/>
+        human={human}
+        setupComplete={data.setupComplete}
+        onRemove={handleRemove}
+        onPlacement={handlePlacement}/>
+      { data.setupComplete &&
       <OtherBoard
-        board={computer.board}
-        history={computer.history}
+        computer={computer}
         onAttack={handleAttack}/>
+      }
     </div>
   );
 }
