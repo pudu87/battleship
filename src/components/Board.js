@@ -63,7 +63,8 @@ const Board = (props) => {
       { !props.setupComplete &&
       <Setup
         human={props.human}
-        onPlacement={props.onPlacement}/>
+        onPlacement={props.onPlacement}
+        onSetupComplete={props.onSetupComplete}/>
       }
     </section>
   )

@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
+import Gameboard from '../logic/Gameboard';
 
 const Setup = (props) => {
   const human = props.human;
   const ships = human.ships;
+
+  const gameboard = Gameboard();
 
   const [orientation, setOrientation] = useState({
     carrier: true,
@@ -18,7 +21,7 @@ const Setup = (props) => {
     const boardSection = document.querySelector('#board');
     const cells = boardSection.querySelectorAll('.cell');
     addEvents(ships, cells);
-    return () => { removeEvents(ships, cells) }
+    return () => removeEvents(ships, cells)
   }, [human, orientation])
 
   function addEvents(ships, cells) {
@@ -145,6 +148,13 @@ const Setup = (props) => {
     <section id='setup'>
       Setup
       {shipViews}
+      <button
+        {...(gameboard.allShipsPlaced(human) && { 
+          onClick: props.onSetupComplete,
+          className: 'activated' 
+        })}>
+        Start
+      </button>
     </section>
   )
 }

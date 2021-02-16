@@ -18,6 +18,9 @@ $board-width: 250px;
 .hidden {
   display: none !important;
 }
+.activated {
+  background-color: red;
+}
 .shot,
 .hit {
   transition-property: background-color;

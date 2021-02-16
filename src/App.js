@@ -46,6 +46,13 @@ function App() {
     setData(newData);
   }
 
+  function handleSetupComplete() {
+    setData({
+      ...data,
+      setupComplete: true
+    })
+  }
+
   function handleAttack(coords) {
     const humanAttack = gameboard.receiveAttack(coords, computer);
     if (!humanAttack) {
@@ -86,7 +93,8 @@ function App() {
         human={human}
         setupComplete={data.setupComplete}
         onRemove={handleRemove}
-        onPlacement={handlePlacement}/>
+        onPlacement={handlePlacement}
+        onSetupComplete={handleSetupComplete}/>
       { data.setupComplete &&
       <OtherBoard
         computer={computer}
