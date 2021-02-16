@@ -15,10 +15,10 @@ beforeEach(() => {
         ...Ship('minesweeper', 2),
         hits: 0
       },
-      cruiser: {
-        ...Ship('cruiser', 3),
-        hits: 0
-      }
+      cruiser: { ...Ship('cruiser', 3) },
+      submarine: { ...Ship('submarine', 3) },
+      battleship: { ...Ship('battleship', 4) },
+      carrier: { ...Ship('carrier', 5) }
     }
   }
   minesweeper = player.ships.minesweeper;
@@ -62,6 +62,25 @@ test('removes a ship', () => {
   let newBoard = gameboard.remove(minesweeper, player);
   expect(newBoard[5][5]).toBe(false);
 })
+
+test('checks if all ships are placed', () => {
+  const positions = [
+    { coords: [5, 5], horizontal: true },
+    { coords: [4, 5], horizontal: true },
+    { coords: [3, 5], horizontal: true },
+    { coords: [2, 5], horizontal: true },
+    { coords: [1, 5], horizontal: true }
+  ]
+  expect(gameboard.allShipsPlaced(player)).toBe(false);
+  let i = 0;
+  for (const ship in player.ships) {
+    player.board = gameboard.place(player.ships[ship], positions[i], player);
+    i++;
+  }
+  expect(gameboard.allShipsPlaced(player)).toBe(true);
+  player.board = gameboard.remove(minesweeper, player);
+  expect(gameboard.allShipsPlaced(player)).toBe(false);
+});
 
 test('check for a hit', () => {
   player.board = gameboard.place(minesweeper, position, player);

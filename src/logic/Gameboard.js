@@ -20,6 +20,15 @@ const Gameboard = () => {
     })
   }
 
+  function allShipsPlaced(player) {
+    const ships = Object.values(player.ships).map(ship => ship.name);
+    return ships.every(ship => {
+      return player.board.flat().some(cell => {
+        return cell === ship;
+      })
+    })
+  }
+
   const receiveAttack = (coords, player) => {
     const { board, history } = player;
     if (!history.find(i => i[0] === coords[0] && i[1] === coords[1])) {
@@ -80,7 +89,7 @@ const Gameboard = () => {
     return newBoard;
   }
 
-  return { place, remove, receiveAttack, allSunk }
+  return { place, remove, allShipsPlaced, receiveAttack, allSunk }
 }
 
 export default Gameboard;
