@@ -7,7 +7,11 @@ const Notifications = (props) => {
       { gameOver && 
         <div>
           {gameOver} Won!
-        </div>
+        </div> &&
+        <button
+          onClick={props.onReset}>
+          Play Again
+        </button>
       }
     </section>
   )

@@ -16,14 +16,23 @@ function App() {
   const { human, computer } = data;
 
   function autoPlaceShips() {
-    const position = {
-      coords: [0, 0],
-      horizontal: true
+    const positions = [
+      { coords: [5, 5], horizontal: true },
+      { coords: [5, 1], horizontal: false },
+      { coords: [1, 0], horizontal: true },
+      { coords: [7, 7], horizontal: true },
+      { coords: [0, 9], horizontal: false }
+    ]
+    let i = 0;
+    let newData = dataObj;
+    for (const ship in dataObj.computer.ships) {
+      let computerBoard = gameboard.place(newData.computer.ships[ship], positions[i], newData.computer);
+      i++;
+      newData = produce(newData, (draft) => {
+        draft.computer.board = computerBoard;
+      })
     }
-    const computerBoard = gameboard.place(dataObj.computer.ships.minesweeper, position, dataObj.computer);
-    return produce(dataObj, (draft) => {
-      draft.computer.board = computerBoard;
-    })
+    return newData;
   }
 
   function handlePlacement(ship, position) {
@@ -85,10 +94,21 @@ function App() {
     setData(newData);
   }
 
+  function handleReset() {
+    setData(autoPlaceShips());
+    const boardSection = document.querySelector('#board');
+    const cells = boardSection.querySelectorAll(`.cell`);
+    cells.forEach(cell => {
+      cell.classList.remove('shot');
+      cell.classList.remove('hit');
+    });
+  }
+
   return (
     <div className="App">
       <Notifications
-        gameOver={data.gameOver}/>
+        gameOver={data.gameOver}
+        onReset={handleReset}/>
       <Board 
         human={human}
         setupComplete={data.setupComplete}

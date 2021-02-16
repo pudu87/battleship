@@ -5,7 +5,7 @@ const Board = (props) => {
   const { board, history } = props.human;
 
   useEffect(() => {
-    setTimeout(markCell, 1000);
+    setTimeout(markCell, 10);
   }, [history])
 
   useEffect(() => {
