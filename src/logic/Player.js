@@ -1,4 +1,5 @@
 import Gameboard from './Gameboard'
+import sample from 'lodash/sample'
 
 const Player = () => { 
   const gameboard = Gameboard();
@@ -6,7 +7,19 @@ const Player = () => {
   const calculateMove = (player) => {
     const history = player.history;
     const validMoves = calculateValidMoves(history);
-    return validMoves[Math.floor(Math.random() * validMoves.length)];
+    return sample(validMoves);
+  }
+
+  function autoPlace(ship, player) {
+    let board;
+    do {
+      const position = {
+        coords: sample(calculateAllMoves()),
+        horizontal: sample([true, false])
+      };
+      board = gameboard.place(ship, position, player);
+    } while (!board)
+    return board;
   }
 
   // PRIVATE
@@ -31,7 +44,7 @@ const Player = () => {
     return allMoves;
   }
 
-  return { gameboard, calculateMove }
+  return { gameboard, calculateMove, autoPlace }
 }
 
 export default Player;

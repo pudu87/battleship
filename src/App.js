@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import produce from 'immer';
+import sample from 'lodash/sample';
 import './App.scss';
 import Notifications from './components/Notifications';
 import Board from './components/Board';
@@ -12,25 +13,17 @@ function App() {
   const player = Player();
   const gameboard = player.gameboard;
 
-  const [data, setData] = useState(autoPlaceShips());
+  const [data, setData] = useState(computerSetup());
   const { human, computer } = data;
 
-  function autoPlaceShips() {
-    const positions = [
-      { coords: [5, 5], horizontal: true },
-      { coords: [5, 1], horizontal: false },
-      { coords: [1, 0], horizontal: true },
-      { coords: [7, 7], horizontal: true },
-      { coords: [0, 9], horizontal: false }
-    ]
-    let i = 0;
+  function computerSetup() {
     let newData = dataObj;
-    for (const ship in dataObj.computer.ships) {
-      let computerBoard = gameboard.place(newData.computer.ships[ship], positions[i], newData.computer);
-      i++;
+    let board;
+    for (const ship in newData.computer.ships) {
+      board = player.autoPlace(newData.computer.ships[ship], newData.computer);
       newData = produce(newData, (draft) => {
-        draft.computer.board = computerBoard;
-      })
+        draft.computer.board = board;
+      });
     }
     return newData;
   }
@@ -95,7 +88,7 @@ function App() {
   }
 
   function handleReset() {
-    setData(autoPlaceShips());
+    setData(computerSetup());
     const boardSection = document.querySelector('#board');
     const cells = boardSection.querySelectorAll(`.cell`);
     cells.forEach(cell => {
