@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import produce from 'immer';
-import sample from 'lodash/sample';
 import './App.scss';
 import Notifications from './components/Notifications';
 import Board from './components/Board';

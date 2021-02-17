@@ -107,11 +107,12 @@ const Setup = (props) => {
     const ship = data.split(' ')[1];
     const partNr = Number(data.split(' ')[0]);
     orientation[ship] ? coords[1] -= partNr : coords[0] -= partNr;
+    if (coords.some(i => i <0)) return false;
     const position = {
       coords,
       horizontal: orientation[ship]
     };
-    props.onPlacement(ship, position);    
+    props.onPlacement(ship, position);  
   }
 
   const shipView = (ship) => {
