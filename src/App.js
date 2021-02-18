@@ -20,7 +20,8 @@ function App() {
     let newData = dataObj;
     let board;
     for (const ship in newData.computer.ships) {
-      board = player.autoPlace(newData.computer.ships[ship], newData.computer);
+      const computer = newData.computer;
+      board = player.autoPlace(computer.ships[ship], computer);
       newData = produce(newData, (draft) => {
         draft.computer.board = board;
       });
@@ -35,9 +36,7 @@ function App() {
         draft.human.board = board;
       })
       setData(newData);
-      console.log(newData);
     }
-    return board;
   }
 
   function handleRemove(ship) {
@@ -49,48 +48,35 @@ function App() {
   }
 
   function handleSetupComplete() {
-    setData({
-      ...data,
-      setupComplete: true
-    })
+    setData({ ...data, setupComplete: true });
   }
 
   function handleAttack(coords) {
     const humanAttack = gameboard.receiveAttack(coords, computer);
     if (!humanAttack) {
-      return console.log('Already been there...')
+      return console.log('Already been there...');
     } else {
       const computerMove = sample(player.calculateMoves(human));
       const computerAttack = gameboard.receiveAttack(computerMove, human);
-      handleAttackData(humanAttack, computerAttack);
+      const newData = produce(data, (draft) => {
+        enterAttackData(draft, humanAttack, 'computer');
+        enterAttackData(draft, computerAttack, 'human');
+      })
+      setData(newData);
     }
   }
 
-  function handleAttackData(humanAttack, computerAttack) {
-    const newData = produce(data, (draft) => {
-      if (humanAttack.target) {
-        draft.computer.ships[humanAttack.target].hits = humanAttack.hits;
-        if (gameboard.allSunk(draft.computer)) {
-          draft.gameOver = 'human';
-        }
-      }
-      if (computerAttack.target) {
-        draft.human.ships[computerAttack.target].hits = computerAttack.hits;
-        if (gameboard.allSunk(draft.human)) {
-          draft.gameOver = 'computer';
-        }
-      }
-      draft.computer.history = humanAttack.history;
-      draft.human.history = computerAttack.history;
-    });
-    console.log(newData);
-    setData(newData);
+  function enterAttackData(draft, attack, player) {
+    if (attack.target) {
+      draft[player].ships[attack.target].hits = attack.hits;
+      draft.gameOver = gameboard.allSunk(draft[player]) ? player : false;
+    }
+    draft[player].history = attack.history;
   }
 
   function handleReset() {
     setData(computerSetup());
-    const boardSection = document.querySelector('#board');
-    const cells = boardSection.querySelectorAll(`.cell`);
+    const cells = document.querySelectorAll(`.cell`);
     cells.forEach(cell => {
       cell.classList.remove('shot');
       cell.classList.remove('hit');

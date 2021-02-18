@@ -8,7 +8,7 @@ const OtherBoard = (props) => {
     const cells = boardSection.querySelectorAll('.cell');
     markCell();
     addClickEvents(cells);
-    return () => { removeClickEvents(cells) } 
+    return () => removeClickEvents(cells);
   }, [history])
 
   function addClickEvents(cells) {

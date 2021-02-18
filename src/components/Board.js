@@ -9,22 +9,21 @@ const Board = (props) => {
   }, [history])
 
   useEffect(() => {
-    if (!props.setupComplete) {
-      const boardSection = document.querySelector('#board');
-      const cells = boardSection.querySelectorAll('.cell:not(.false)');
+    if (props.setupComplete) return
+    const boardSection = document.querySelector('#board');
+    const cells = boardSection.querySelectorAll('.cell:not(.false)');
+    cells.forEach(cell => {
+      cell.addEventListener('click', removeShip);
+    })
+    return () => { 
       cells.forEach(cell => {
-        cell.addEventListener('click', removeShip);
+        cell.removeEventListener('click', removeShip);
       })
-      return () => { 
-        cells.forEach(cell => {
-          cell.removeEventListener('click', removeShip);
-        })
-      }
     }
   })
 
   function removeShip(e) {
-    const shipName = e.target.closest('li').className.split(' ')[1];
+    const shipName = this.closest('li').className.split(' ')[1];
     props.onRemove(shipName);
     const setupSection = document.querySelector('#setup');
     const ship = setupSection.querySelector(`.${shipName}`);
@@ -61,10 +60,10 @@ const Board = (props) => {
         {boardView}
       </ul>
       { !props.setupComplete &&
-      <Setup
-        human={props.human}
-        onPlacement={props.onPlacement}
-        onSetupComplete={props.onSetupComplete}/>
+        <Setup
+          human={props.human}
+          onPlacement={props.onPlacement}
+          onSetupComplete={props.onSetupComplete}/>
       }
     </section>
   )
