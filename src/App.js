@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import produce from 'immer';
+import sample from 'lodash/sample';
 import './App.scss';
 import Notifications from './components/Notifications';
 import Board from './components/Board';
@@ -59,7 +60,7 @@ function App() {
     if (!humanAttack) {
       return console.log('Already been there...')
     } else {
-      const computerMove = player.calculateMove(human);
+      const computerMove = sample(player.calculateMoves(human));
       const computerAttack = gameboard.receiveAttack(computerMove, human);
       handleAttackData(humanAttack, computerAttack);
     }
