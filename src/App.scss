@@ -1,25 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch&display=swap');
+
 * {
   box-sizing: border-box;
+  font-family: 'Chakra Petch', sans-serif;
+  // border: 1px solid red;
+}
+#root {
+  background-color: #eee;
 }
 .App {
-  text-align: center;
-}
-section {
-  border: 1px solid #aaa;
-  padding: 20px;
+  width: 600px;
+  min-height: 100vh;
+  padding: 20px 10px;
+  margin: auto;
+  display: grid;
+  grid-template-rows: 80px auto;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  background-color: #fff;
 }
 
 // PARAMS
 
-$board-width: 250px;
+$cell-width: 25px;
+$hit: rgb(255, 170, 170);
+$shot: rgb(175, 210, 250);
+
+// GENERAL
+
+button {
+  padding: .3em 1em;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+button:not(.activated) {
+  background-color: #ddd;
+  color: #aaa;
+}
+button.activated:hover {
+  cursor: pointer;
+}
+button.activated:active {
+  scale: 1.1;
+  background-color: #eee;
+}
 
 // EFFECTS
 
-.hidden {
+.no-display {
   display: none !important;
 }
+.hidden {
+  visibility: hidden;
+}
+.span-columns {
+  grid-column: 1 / span 2;
+}
 .activated {
-  background-color: red;
+  background-color: #fff;
+  color: #000;
 }
 .shot,
 .hit {
@@ -28,51 +68,97 @@ $board-width: 250px;
   transition-timing-function: ease-out;
 }
 .shot {
-  background-color: rgb(180, 180, 255);
+  background-color: $shot;
 }
-.hit {
-  background-color: rgb(255, 170, 170);
+#other-board {
+  .cell:not(.shot):not(.hit):hover {
+    cursor: pointer;
+    box-shadow: 0 0 3px $hit inset;
+    position: relative;
+  }
+  .cell:not(.shot):not(.hit):hover:before {
+    content: '';
+    position: absolute;
+    height: $cell-width;
+    border-left: 1px solid $hit;
+    left: ($cell-width / 2) - 2;
+    box-shadow: 0 0 1px $hit, 0 0 1px $hit inset;
+  }
+  .cell:not(.shot):not(.hit):hover:after {
+    content: '';
+    position: absolute;
+    width: $cell-width;
+    border-top: 1px solid $hit;
+    top: ($cell-width / 2) - 2;
+    box-shadow: 0 0 1px $hit, 0 0 1px $hit inset;
+  }
 }
 .part > span,
 .cell > span {
   display: block;
-  width: 95%;
-  height: 95%;
-  border-radius: 35%;
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
 }
 .minesweeper span {
-  background-color: rgb(255, 207, 160);
+  background-color: #888;
 }
 .submarine span {
-  background-color: rgb(175, 175, 255);
+  background-color: #999;
 }
 .cruiser span {
-  background-color: rgb(201, 201, 146);
+  background-color: #aaa;
 }
 .battleship span {
-  background-color: rgb(158, 255, 223);
+  background-color: #bbb;
 }
 .carrier span {
-  background-color: rgb(255, 169, 255);
+  background-color: #ccc;
+}
+#board .cell.hit span {
+  background-color: $hit;
+}
+#other-board .cell.hit span {
+  background-color: $hit;
+}
+
+// NOTIFICATIONS
+
+#notifications {
+  grid-column: 1 / span 2;
+  width: 100%;
+  padding: 20px;
+  border: 3px ridge #ccc;
+  font-size: 20px;
+  text-align: center;
 }
 
 // BOARDS
 
 .board {
+  h3 {
+    text-align: center;
+  }
   > ul {
-    width: $board-width;
+    width: ($cell-width * 10) + 4px;
     display: grid;
-    grid-template-columns: repeat(10, $board-width / 10);
-    grid-template-rows: repeat(10, $board-width / 10);
-    border-top: 1px solid #ccc;
-    border-left: 1px solid #ccc;
+    grid-template-columns: repeat(10, $cell-width);
+    grid-template-rows: repeat(10, $cell-width);
+    border: 2px solid #ccc;
+    border-radius: 4px;
   }
   .cell {
-    border-bottom: 1px solid #ccc;
-    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
     font-size: 12px;
     text-transform: capitalize;
     list-style: none;
+  }
+  .cell:nth-child(10n) {
+    border-right: none;
+  }
+  .cell:nth-child(n+91) {
+    border-bottom: none;
   }
 }
 
@@ -80,14 +166,25 @@ $board-width: 250px;
 
 #setup {
   margin-top: 20px;
+  text-align: center;
+  p {
+    text-align: left;
+  }
+}
+.shipyard {
+  height: 125px;
+  display: grid;
+  grid-template-columns: repeat(10, $cell-width);
+  grid-template-rows: repeat(5, $cell-width);
+  grid-auto-flow: column dense;
 }
 ul {
   margin-top: 0px;
   margin-bottom: 0px;
   padding-left: 0;
   display: grid;
-  grid-template-columns: repeat(5, 25px);
-  grid-template-rows: 25px;
+  grid-template-columns: repeat(10, $cell-width);
+  grid-template-rows: repeat(5, $cell-width);
   li {
     display: grid;
     justify-items: center;

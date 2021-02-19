@@ -27,7 +27,7 @@ const Board = (props) => {
     props.onRemove(shipName);
     const setupSection = document.querySelector('#setup');
     const ship = setupSection.querySelector(`.${shipName}`);
-    ship.classList.remove('hidden');
+    ship.classList.remove('no-display');
   }
 
   function markCell() {
@@ -54,8 +54,11 @@ const Board = (props) => {
   return (
     <section 
       id='board'
-      className='board'>
-      Board
+      className={ props.setupComplete ? 'board' : 'board span-columns' }>
+      <h3
+        className={ props.setupComplete ? '' : 'hidden' }>
+        My Board
+      </h3>
       <ul>
         {boardView}
       </ul>

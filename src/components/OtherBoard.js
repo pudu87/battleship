@@ -35,19 +35,19 @@ const OtherBoard = (props) => {
   }
 
   const attack = useCallback((e) => {
-    let coords = e.target.className.split(' ')[0].split('_');
+    let coords = e.target.closest('li').className.split(' ')[0].split('_');
     coords.shift();
     coords = coords.map(i => Number(i));
     props.onAttack(coords);
   }, [addClickEvents])
 
   const boardView = board.map((row, rowIndex) => {
-    return row.map((cell, columnIndex) => {
+    return row.map((_, columnIndex) => {
       return (
         <li
           key={`_${rowIndex}_${columnIndex}`}
           className={`_${rowIndex}_${columnIndex} cell`}>
-          {cell[0]}
+          <span></span>
         </li>
       )
     });
@@ -57,7 +57,7 @@ const OtherBoard = (props) => {
     <section 
       id='other-board'
       className='board'>
-      OtherBoard
+      <h3>Computer</h3>
       <ul>
         {boardView}
       </ul>

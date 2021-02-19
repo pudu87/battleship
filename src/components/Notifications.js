@@ -9,6 +9,7 @@ const Notifications = (props) => {
           {gameOver} Won!
         </div> &&
         <button
+          className='activated'
           onClick={props.onReset}>
           Play Again
         </button>

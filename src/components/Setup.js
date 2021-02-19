@@ -62,7 +62,7 @@ const Setup = (props) => {
     const partNr = part.className.split(' ')[0].split('_')[1];
     const ship = this.className.split(' ')[1];
     e.dataTransfer.setData("text/plain", `${partNr} ${ship}`);
-    setTimeout(() => this.classList.add('hidden'), 0);
+    setTimeout(() => this.classList.add('no-display'), 0);
   }
 
   function dragEnd(e) {
@@ -70,7 +70,7 @@ const Setup = (props) => {
     const succes = human.board.some(row => {
       return row.some(cell => cell === ship);
     })
-    if (!succes) this.classList.remove('hidden');
+    if (!succes) this.classList.remove('no-display');
   }
   
   function dragOver(e) {
@@ -101,6 +101,7 @@ const Setup = (props) => {
 
   function horizontalStyle(length) {
     return {
+      gridColumn: `1 / span ${length}`,
       width: `${length * 25}px`,
       gridTemplateColumns: `repeat(${length}, 25px)`,
       gridTemplateRows: '25px'
@@ -109,6 +110,7 @@ const Setup = (props) => {
 
   function verticalStyle(length) { 
     return {
+      gridRow: `1 / span ${length}`,
       width: '25px',
       gridTemplateColumns: '25px',
       gridTemplateRows: `repeat(${length}, 25px)`
@@ -147,14 +149,21 @@ const Setup = (props) => {
 
   return (
     <section id='setup'>
-      Setup
-      {shipViews}
+      <div
+        className='shipyard'>
+        {shipViews}
+      </div>
+      <p>
+        Place your ships on the board:<br/>
+        - click on a ship to rotate<br/>
+        - click on the board to reset a ship
+      </p>
       <button
         {...(gameboard.allShipsPlaced(human) && { 
           onClick: props.onSetupComplete,
           className: 'activated' 
         })}>
-        Start
+        Start Game
       </button>
     </section>
   )
