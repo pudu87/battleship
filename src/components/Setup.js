@@ -154,17 +154,9 @@ const Setup = (props) => {
         {shipViews}
       </div>
       <p>
-        Place your ships on the board:<br/>
         - click on a ship to rotate<br/>
         - click on the board to reset a ship
       </p>
-      <button
-        {...(gameboard.allShipsPlaced(human) && { 
-          onClick: props.onSetupComplete,
-          className: 'activated' 
-        })}>
-        Start Game
-      </button>
     </section>
   )
 }

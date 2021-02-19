@@ -5,7 +5,7 @@ const Board = (props) => {
   const { board, history } = props.human;
 
   useEffect(() => {
-    setTimeout(markCell, 10);
+    setTimeout(markCell, props.lag);
   }, [history])
 
   useEffect(() => {
@@ -39,12 +39,22 @@ const Board = (props) => {
     cell.classList.add(effect);
   }
 
+  function getCellClass(rowIndex, columnIndex, cell) {
+    if (!cell) {
+      return `_${rowIndex}_${columnIndex} cell`;
+    } else if (props.setupComplete) {
+      return `_${rowIndex}_${columnIndex} ${cell} cell`;
+    } else {
+      return `_${rowIndex}_${columnIndex} ${cell} setup cell`;
+    }
+  }
+
   const boardView = board.map((row, rowIndex) => {
     return row.map((cell, columnIndex) => {
       return (
         <li
           key={`_${rowIndex}_${columnIndex}`}
-          className={`_${rowIndex}_${columnIndex} ${cell} cell`}>
+          className={getCellClass(rowIndex, columnIndex, cell)}>
           <span></span>
         </li>
       )
@@ -65,8 +75,7 @@ const Board = (props) => {
       { !props.setupComplete &&
         <Setup
           human={props.human}
-          onPlacement={props.onPlacement}
-          onSetupComplete={props.onSetupComplete}/>
+          onPlacement={props.onPlacement}/>
       }
     </section>
   )

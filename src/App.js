@@ -12,6 +12,7 @@ function App() {
 
   const player = Player();
   const gameboard = player.gameboard;
+  const lag = 2000;
 
   const [data, setData] = useState(computerSetup());
   const { human, computer } = data;
@@ -53,17 +54,14 @@ function App() {
 
   function handleAttack(coords) {
     const humanAttack = gameboard.receiveAttack(coords, computer);
-    if (!humanAttack) {
-      return console.log('Already been there...');
-    } else {
-      const computerMove = sample(player.calculateMoves(human));
-      const computerAttack = gameboard.receiveAttack(computerMove, human);
-      const newData = produce(data, (draft) => {
-        enterAttackData(draft, humanAttack, 'computer');
-        enterAttackData(draft, computerAttack, 'human');
-      })
-      setData(newData);
-    }
+    if (!humanAttack) return;
+    const computerMove = sample(player.calculateMoves(human));
+    const computerAttack = gameboard.receiveAttack(computerMove, human);
+    const newData = produce(data, (draft) => {
+      enterAttackData(draft, humanAttack, 'computer');
+      enterAttackData(draft, computerAttack, 'human');
+    })
+    setData(newData);
   }
 
   function enterAttackData(draft, attack, player) {
@@ -86,14 +84,21 @@ function App() {
   return (
     <div className="App">
       <Notifications
+        human={human}
+        computer={computer}
+        setupCorrect={gameboard.allShipsPlaced(human)}
+        onSetupComplete={handleSetupComplete}
+        setupComplete={data.setupComplete}
         gameOver={data.gameOver}
-        onReset={handleReset}/>
+        onReset={handleReset}
+        lag={lag}/>
       <Board 
         human={human}
         setupComplete={data.setupComplete}
         onRemove={handleRemove}
         onPlacement={handlePlacement}
-        onSetupComplete={handleSetupComplete}/>
+        onSetupComplete={handleSetupComplete}
+        lag={lag}/>
       { data.setupComplete &&
       <OtherBoard
         computer={computer}

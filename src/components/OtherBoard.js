@@ -16,7 +16,7 @@ const OtherBoard = (props) => {
       cells.forEach(cell => {
         cell.addEventListener('click', attack);
       })
-    }, 10)
+    }, props.lag)
   }
 
   function removeClickEvents(cells) {
