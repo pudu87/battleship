@@ -19,10 +19,9 @@ function App() {
 
   function computerSetup() {
     let newData = dataObj;
-    let board;
     for (const ship in newData.computer.ships) {
       const computer = newData.computer;
-      board = player.autoPlace(computer.ships[ship], computer);
+      let board = player.autoPlace(computer.ships[ship], computer);
       newData = produce(newData, (draft) => {
         draft.computer.board = board;
       });

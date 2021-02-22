@@ -8,7 +8,7 @@ const Notifications = (props) => {
   useEffect(() => {
     const myBoard = document.querySelector('.my-board');
     if (myBoard) {
-      myBoard.classList.toggle('hidden')
+      myBoard.classList.toggle('hidden');
       setTimeout(() => {
         myBoard.classList.toggle('hidden');
       }, props.lag);

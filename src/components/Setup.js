@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
-import Gameboard from '../logic/Gameboard';
 
 const Setup = (props) => {
   const human = props.human;
   const ships = human.ships;
-
-  const gameboard = Gameboard();
 
   const [orientation, setOrientation] = useState({
     carrier: true,
