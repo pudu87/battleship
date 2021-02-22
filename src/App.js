@@ -86,22 +86,23 @@ function App() {
       <Notifications
         human={human}
         computer={computer}
-        setupCorrect={gameboard.allShipsPlaced(human)}
-        onSetupComplete={handleSetupComplete}
         setupComplete={data.setupComplete}
         gameOver={data.gameOver}
-        onReset={handleReset}
-        lag={lag}/>
+        lag={lag}
+        setupCorrect={gameboard.allShipsPlaced(human)}
+        onSetupComplete={handleSetupComplete}
+        onReset={handleReset}/>
       <Board 
         human={human}
         setupComplete={data.setupComplete}
+        lag={lag}
         onRemove={handleRemove}
         onPlacement={handlePlacement}
-        onSetupComplete={handleSetupComplete}
-        lag={lag}/>
+        onSetupComplete={handleSetupComplete}/>
       { data.setupComplete &&
       <OtherBoard
         computer={computer}
+        gameOver={data.gameOver}
         onAttack={handleAttack}/>
       }
     </div>

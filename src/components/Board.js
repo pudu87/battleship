@@ -9,7 +9,7 @@ const Board = (props) => {
   }, [history])
 
   useEffect(() => {
-    if (props.setupComplete) return
+    if (props.setupComplete) return;
     const boardSection = document.querySelector('#board');
     const cells = boardSection.querySelectorAll('.cell:not(.false)');
     cells.forEach(cell => {

@@ -4,6 +4,7 @@ const OtherBoard = (props) => {
   const { board, history } = props.computer;
 
   useEffect(() => {
+    if (props.gameOver) return;
     const boardSection = document.querySelector('#other-board');
     const cells = boardSection.querySelectorAll('.cell');
     markCell();
