@@ -12,7 +12,7 @@ function App() {
 
   const player = Player();
   const gameboard = player.gameboard;
-  const lag = 1000;
+  const lag = 100;
 
   const [data, setData] = useState(computerSetup());
   const { human, computer } = data;
