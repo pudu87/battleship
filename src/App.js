@@ -58,16 +58,16 @@ function App() {
     const computerMove = sample(player.calculateMoves(human));
     const computerAttack = gameboard.receiveAttack(computerMove, human);
     const newData = produce(data, (draft) => {
-      enterAttackData(draft, humanAttack, 'computer');
-      enterAttackData(draft, computerAttack, 'human');
+      enterAttackData(draft, humanAttack, 'computer', 'You');
+      enterAttackData(draft, computerAttack, 'human', 'Computer');
     })
     setData(newData);
   }
 
-  function enterAttackData(draft, attack, player) {
+  function enterAttackData(draft, attack, player, winner) {
     if (attack.target) {
       draft[player].ships[attack.target].hits = attack.hits;
-      draft.gameOver = gameboard.allSunk(draft[player]) ? player : false;
+      draft.gameOver = gameboard.allSunk(draft[player]) ? winner : false;
     }
     draft[player].history = attack.history;
   }
