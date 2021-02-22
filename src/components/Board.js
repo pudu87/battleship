@@ -5,11 +5,8 @@ const Board = (props) => {
   const { board, history } = props.human;
 
   useEffect(() => {
-    setTimeout(markCell, props.lag);
-  }, [history])
-
-  useEffect(() => {
     if (props.setupComplete) return;
+    setTimeout(markCell, props.lag);
     const boardSection = document.querySelector('#board');
     const cells = boardSection.querySelectorAll('.cell:not(.false)');
     cells.forEach(cell => {

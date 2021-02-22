@@ -4,10 +4,10 @@ const OtherBoard = (props) => {
   const { board, history } = props.computer;
 
   useEffect(() => {
+    markCell();
     if (props.gameOver) return;
     const boardSection = document.querySelector('#other-board');
     const cells = boardSection.querySelectorAll('.cell');
-    markCell();
     addClickEvents(cells);
     return () => removeClickEvents(cells);
   }, [history])
