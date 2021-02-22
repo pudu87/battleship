@@ -1,8 +1,19 @@
 import upperFirst from 'lodash/upperFirst';
+import { useEffect } from 'react';
 
 const Notifications = (props) => {
   const { gameOver, setupComplete, setupConfirmed } = props;
   const { human, computer } = props;
+
+  useEffect(() => {
+    const myBoard = document.querySelector('.my-board');
+    if (myBoard) {
+      myBoard.classList.toggle('hidden')
+      setTimeout(() => {
+        myBoard.classList.toggle('hidden');
+      }, props.lag);
+    }
+  }, [human, computer])
 
   function collectInfo() {
     if (!setupComplete) {
@@ -32,7 +43,7 @@ const Notifications = (props) => {
     if (info.length === 1) {
       return 'span-columns';
     } else {
-      return index === 1 ? 'computer' : 'my-board';
+      return index === 0 ? 'my-board' : 'computer';
     }
   }
 

@@ -12,7 +12,7 @@ function App() {
 
   const player = Player();
   const gameboard = player.gameboard;
-  const lag = 2000;
+  const lag = 1000;
 
   const [data, setData] = useState(computerSetup());
   const { human, computer } = data;
@@ -103,6 +103,7 @@ function App() {
       <OtherBoard
         computer={computer}
         gameOver={data.gameOver}
+        lag={lag}
         onAttack={handleAttack}/>
       }
     </div>
