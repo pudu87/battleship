@@ -19,7 +19,7 @@ const Setup = (props) => {
     const cells = boardSection.querySelectorAll('.cell');
     addEvents(ships, cells);
     return () => removeEvents(ships, cells);
-  }, [human, orientation])
+  })
 
   function addEvents(ships, cells) {
     ships.forEach(ship => {

@@ -13,7 +13,7 @@ const Notifications = (props) => {
         myBoard.classList.toggle('hidden');
       }, props.lag);
     }
-  }, [human, computer])
+  }, [human, computer, props.lag])
 
   function collectInfo() {
     if (!setupComplete) {

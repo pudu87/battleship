@@ -1,32 +1,40 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 
 const OtherBoard = (props) => {
   const { board, history } = props.computer;
 
-  useEffect(() => {
-    markCell();
-    if (props.gameOver) return;
-    const boardSection = document.querySelector('#other-board');
-    const cells = boardSection.querySelectorAll('.cell');
-    addClickEvents(cells);
-    return () => removeClickEvents(cells);
-  }, [history])
+  useEffect(() => markCell());
 
-  function addClickEvents(cells) {
-    setTimeout(() => {
+  useEventListener('click', attack);
+
+  function useEventListener(eventName, handler) {
+    const savedHandler = useRef();
+    useEffect(() => {
+      savedHandler.current = handler;
+    }, [handler]);
+    useEffect(() => {
+      const boardSection = document.querySelector('#other-board');
+      const cells = boardSection.querySelectorAll('.cell');
+      const eventListener = event => savedHandler.current(event);
       cells.forEach(cell => {
-        cell.addEventListener('click', attack);
+        cell.addEventListener(eventName, eventListener);
       })
-    }, props.lag)
+      return () => {
+        cells.forEach(cell => {
+          cell.removeEventListener(eventName, eventListener);
+        })
+      };
+    }, [eventName]);
   }
 
-  function removeClickEvents(cells) {
-    cells.forEach(cell => {
-      cell.removeEventListener('click', attack);
-    })
+  function attack(e) {
+    let coords = e.target.closest('li').className.split(' ')[0].split('_');
+    coords.shift();
+    coords = coords.map(i => Number(i));
+    props.onAttack(coords);
   }
 
-  function markCell() {
+  function markCell () {
     if (!history[0]) return;
     const coords = history[history.length - 1];
     const effect = board[coords[0]][coords[1]] ? 'hit' : 'shot';
@@ -35,20 +43,13 @@ const OtherBoard = (props) => {
     cell.classList.add(effect);
   }
 
-  const attack = useCallback((e) => {
-    let coords = e.target.closest('li').className.split(' ')[0].split('_');
-    coords.shift();
-    coords = coords.map(i => Number(i));
-    props.onAttack(coords);
-  }, [addClickEvents])
-
   const boardView = board.map((row, rowIndex) => {
     return row.map((_, columnIndex) => {
       return (
         <li
           key={`_${rowIndex}_${columnIndex}`}
           className={`_${rowIndex}_${columnIndex} cell`}>
-          <span></span>
+          <span>{_[0]}</span>
         </li>
       )
     });
