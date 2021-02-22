@@ -49,7 +49,7 @@ const OtherBoard = (props) => {
         <li
           key={`_${rowIndex}_${columnIndex}`}
           className={`_${rowIndex}_${columnIndex} cell`}>
-          <span>{_[0]}</span>
+          <span></span>
         </li>
       )
     });
