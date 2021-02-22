@@ -42,7 +42,7 @@ const Board = (props) => {
   function getCellClass(rowIndex, columnIndex, cell) {
     if (!cell) {
       return `_${rowIndex}_${columnIndex} cell`;
-    } else if (props.setupComplete) {
+    } else if (props.setupConfirmed) {
       return `_${rowIndex}_${columnIndex} ${cell} cell`;
     } else {
       return `_${rowIndex}_${columnIndex} ${cell} setup cell`;
@@ -64,15 +64,15 @@ const Board = (props) => {
   return (
     <section 
       id='board'
-      className={ props.setupComplete ? 'board' : 'board span-columns' }>
+      className={ props.setupConfirmed ? 'board' : 'board span-columns' }>
       <h3
-        className={ props.setupComplete ? '' : 'hidden' }>
+        className={ props.setupConfirmed ? '' : 'hidden' }>
         My Board
       </h3>
       <ul>
         {boardView}
       </ul>
-      { !props.setupComplete &&
+      { !props.setupConfirmed &&
         <Setup
           human={props.human}
           onPlacement={props.onPlacement}/>

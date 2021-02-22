@@ -48,8 +48,8 @@ function App() {
     setData(newData);
   }
 
-  function handleSetupComplete() {
-    setData({ ...data, setupComplete: true });
+  function handleConfirmSetup() {
+    setData({ ...data, setupConfirmed: true });
   }
 
   function handleAttack(coords) {
@@ -86,20 +86,20 @@ function App() {
       <Notifications
         human={human}
         computer={computer}
-        setupComplete={data.setupComplete}
+        setupConfirmed={data.setupConfirmed}
         gameOver={data.gameOver}
         lag={lag}
-        setupCorrect={gameboard.allShipsPlaced(human)}
-        onSetupComplete={handleSetupComplete}
+        setupComplete={gameboard.allShipsPlaced(human)}
+        onConfirmSetup={handleConfirmSetup}
         onReset={handleReset}/>
       <Board 
         human={human}
-        setupComplete={data.setupComplete}
+        setupConfirmed={data.setupConfirmed}
         lag={lag}
         onRemove={handleRemove}
         onPlacement={handlePlacement}
-        onSetupComplete={handleSetupComplete}/>
-      { data.setupComplete &&
+        onConfirmSetup={handleConfirmSetup}/>
+      { data.setupConfirmed &&
       <OtherBoard
         computer={computer}
         gameOver={data.gameOver}

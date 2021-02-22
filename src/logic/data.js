@@ -28,7 +28,7 @@ const player = {
 }
 
 const data = {
-  setupComplete: false,
+  setupConfirmed: false,
   gameOver: false,
   human: {
     ...player

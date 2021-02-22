@@ -1,11 +1,11 @@
 import upperFirst from 'lodash/upperFirst';
 
 const Notifications = (props) => {
-  const { gameOver, setupCorrect, setupComplete } = props;
+  const { gameOver, setupComplete, setupConfirmed } = props;
   const { human, computer } = props;
 
   function collectInfo() {
-    if (!setupCorrect) {
+    if (!setupComplete) {
       return ['Place all ships on the board']
     } else if (gameOver) {
       return [`Game over. ${gameOver} won!`]
@@ -53,10 +53,10 @@ const Notifications = (props) => {
     <section 
       id='notifications'
       className='span-columns'>
-      { setupCorrect && !setupComplete &&
+      { setupComplete && !setupConfirmed &&
       <div className='span-columns'>
         <button
-          onClick= {props.onSetupComplete}
+          onClick= {props.onConfirmSetup}
           className= 'activated span-columns'>
           Start Game
         </button>
