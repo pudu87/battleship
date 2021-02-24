@@ -69,7 +69,9 @@ function App() {
   function enterAttackData(draft, attack, player, winner) {
     if (attack.target) {
       draft[player].ships[attack.target].hits = attack.hits;
-      draft.gameOver = gameboard.allSunk(draft[player]) ? winner : false;
+      if (!draft.gameOver) {
+        draft.gameOver = gameboard.allSunk(draft[player]) ? winner : false;
+      }
     }
     draft[player].history = attack.history;
   }
