@@ -36,6 +36,9 @@ function App() {
         draft.human.board = board;
       })
       setData(newData);
+      return true;
+    } else {
+      return false;
     }
   }
 

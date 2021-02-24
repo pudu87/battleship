@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import Setup from './Setup';
 
 const Board = (props) => {
-  const { board, history } = props.human;
+  const { board, history, ships } = props.human;
 
   useEffect(() => {
     if (props.setupComplete) return;
@@ -22,9 +22,8 @@ const Board = (props) => {
   function removeShip(e) {
     const shipName = this.closest('li').className.split(' ')[1];
     props.onRemove(shipName);
-    const setupSection = document.querySelector('#setup');
-    const ship = setupSection.querySelector(`.${shipName}`);
-    ship.classList.remove('no-display');
+    const ship = document.querySelector(`.${shipName}`);
+    ship.classList.toggle('no-display');
   }
 
   function markCell() {
@@ -71,7 +70,7 @@ const Board = (props) => {
       </ul>
       { !props.setupConfirmed &&
         <Setup
-          human={props.human}
+          ships={props.human.ships}
           onPlacement={props.onPlacement}/>
       }
     </section>

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
+import range from 'lodash/range';
 
 const Setup = (props) => {
-  const human = props.human;
-  const ships = human.ships;
+  const { ships } = props;
 
   const [orientation, setOrientation] = useState({
     carrier: true,
@@ -13,87 +13,91 @@ const Setup = (props) => {
   });
 
   useEffect(() => {
-    const setupSection = document.querySelector('#setup');
-    const ships = setupSection.querySelectorAll('.ship');
-    const boardSection = document.querySelector('#board');
-    const cells = boardSection.querySelectorAll('.cell');
-    addEvents(ships, cells);
-    return () => removeEvents(ships, cells);
+    const ships = document.querySelectorAll('.ship');
+    ships.forEach(ship => {
+      ship.addEventListener('mousedown', onMouseDown);
+    });
+    return () => {
+      ships.forEach(ship => {
+        ship.removeEventListener('mousedown', onMouseDown);
+      });
+    }
   })
 
-  function addEvents(ships, cells) {
-    ships.forEach(ship => {
-      ship.addEventListener('click', rotate);
-      ship.addEventListener('dragstart', dragStart);
-      ship.addEventListener('dragend', dragEnd);
-    })
-    for(const cell of cells) {
-      cell.addEventListener('dragover', dragOver);
-      cell.addEventListener('drop', dragDrop);
-    }
-  }
-
-  function removeEvents(ships, cells) {
-    ships.forEach(ship => {
-      ship.removeEventListener('click', rotate);
-      ship.removeEventListener('dragstart', dragStart);
-      ship.removeEventListener('dragend', dragEnd);
-    })
-    for(const cell of cells) {
-      cell.removeEventListener('dragover', dragOver);
-      cell.removeEventListener('drop', dragDrop);
-    }
-  }
-
-  function rotate(e) {
+  function onMouseDown(e) {
+    const startXY = [e.clientX, e.clientY];
     const ship = e.target.closest('ul');
+    const part = e.target.closest('li');
     const shipName = ship.className.split(' ')[1];
+    const partNr = part.className.split(' ')[0].split('_')[1];
+    const shiftX = e.clientX - ship.getBoundingClientRect().left;
+    const clone = cloneShip(ship);
+  
+    moveAt(e.pageX, e.pageY);
+    function moveAt(pageX, pageY) {
+      clone.style.left = pageX - shiftX + 'px';
+      clone.style.top = pageY - clone.offsetHeight / 2 + 'px';
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    function onMouseMove(e) {
+      moveAt(e.pageX, e.pageY);
+    }
+
+    clone.addEventListener('mouseup', onMouseUp);
+    function onMouseUp(e) {
+      const endXY = [e.clientX, e.clientY];
+      document.removeEventListener('mousemove', onMouseMove);
+      if (checkIfMouseClick(startXY, endXY)) {
+        rotate(shipName);
+      }
+      const cell = getCell(e, clone);
+      if (cell) {
+        const coords = getCoords(cell, shipName, partNr);
+        const position = {
+          coords,
+          horizontal: orientation[shipName]
+        };
+        if (coords && props.onPlacement(shipName, position)) {
+          return;
+        }
+      }
+      ship.classList.toggle('no-display');
+    }
+  }
+
+  function cloneShip(ship) {
+    const clone = ship.cloneNode(true);
+    clone.style.position = 'absolute';
+    document.body.append(clone);
+    ship.classList.toggle('no-display');
+    return clone;
+  }
+
+  function checkIfMouseClick(startXY, endXY) {
+    return range(0,3).includes(endXY[0] - startXY[0]) &&
+      range(0,3).includes(endXY[1] - startXY[1])
+  }
+
+  function rotate(shipName) {
     setOrientation({
       ...orientation,
       [shipName]: !orientation[shipName]
     });
   }
 
-  function dragStart(e) {
-    const part = e.explicitOriginalTarget.closest('li');
-    const partNr = part.className.split(' ')[0].split('_')[1];
-    const ship = this.className.split(' ')[1];
-    e.dataTransfer.setData("text/plain", `${partNr} ${ship}`);
-    setTimeout(() => this.classList.add('no-display'), 0);
+  function getCell(e, clone) {
+    document.body.removeChild(clone);
+    const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+    return elementBelow.closest('.cell');
   }
 
-  function dragEnd(e) {
-    const ship = this.className.split(' ')[1];
-    const succes = human.board.some(row => {
-      return row.some(cell => cell === ship);
-    })
-    if (!succes) this.classList.remove('no-display');
-  }
-  
-  function dragOver(e) {
-    e.preventDefault();
-  }
-
-  function dragDrop(e) {
-    const cell = this.closest('li');
-    const data = e.dataTransfer.getData("text/plain");
-    const ship = data.split(' ')[1];
-    const partNr = Number(data.split(' ')[0]);
-    const coords = processCoords(cell, ship, partNr)
-    if (coords.some(i => i < 0)) return false;
-    const position = {
-      coords,
-      horizontal: orientation[ship]
-    };
-    props.onPlacement(ship, position);  
-  }
-
-  function processCoords(cell, ship, partNr) {
+  function getCoords(cell, ship, partNr) {
     let coords = cell.className.split(' ')[0].split('_');
     coords.shift();
     coords = coords.map(i => Number(i));
     orientation[ship] ? coords[1] -= partNr : coords[0] -= partNr;
-    return coords;
+    return coords.some(i => i < 0) ? false : coords;
   }
 
   function horizontalStyle(length) {
@@ -133,7 +137,6 @@ const Setup = (props) => {
       <ul 
         key={index}
         className={`ship ${ship.name}`}
-        draggable='true'
         style={
           orientation[ship.name] ? 
             horizontalStyle(ship.length) : 
